@@ -1,0 +1,382 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  color: #f1f1f1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 2rem;
+  background: #0a0a0a;
+  user-select: none;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: -150%;
+  left: -150%;
+  width: 400%;
+  height: 400%;
+  background: radial-gradient(circle at 50% 50%, #4b2a73 0%, #5f1f64 60%, #4e1f3b 100%);
+  background-size: 800% 800%;
+  z-index: -2;
+  filter: blur(140px);
+  opacity: 0.7;
+  mask-image: radial-gradient(circle, white 50%, transparent 90%);
+}
+
+body::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(white 1px, transparent 1px);
+  background-size: 3px 3px;
+  opacity: 0.05;
+  z-index: -1;
+  animation: sparkle 30s linear infinite;
+}
+
+@keyframes rotateGradient {
+  0% { background-position: 0% 50%; transform: rotate(0deg); }
+  50% { background-position: 100% 50%; transform: rotate(180deg); }
+  100% { background-position: 0% 50%; transform: rotate(360deg); }
+}
+
+@keyframes sparkle {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(5px, 5px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 3rem 4rem;
+  border-radius: 16px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  margin-bottom: 2rem;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 1.25rem;
+  font-size: 1.2rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #f1f1f1;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #ffffff88;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+input[type="text"]:focus-visible {
+  outline: 2px solid #ffffff44;
+}
+
+.suggestion-box {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  margin-top: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  max-height: 220px;
+  overflow-y: auto;
+  display: none;
+  animation: fadeSlide 0.3s ease forwards;
+  transition: all 0.3s ease;
+  scroll-behavior: smooth; /* Smooth scroll */
+}
+
+/* Scrollbar Styling */
+.suggestion-box::-webkit-scrollbar {
+  width: 8px; /* Narrower scrollbar */
+}
+
+.suggestion-box::-webkit-scrollbar-track {
+  background: transparent; /* No visible background */
+}
+
+.suggestion-box::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.25); /* Soft translucent color */
+  border-radius: 8px; /* Rounded edges */
+  border: 2px solid transparent; /* Subtle border to enhance visual appeal */
+  background-clip: padding-box; /* Ensure border isn't visible outside the thumb */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+}
+
+.suggestion-box::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Slightly brighter color on hover */
+  transform: scale(1.1); /* Slight scaling effect on hover for better interactivity */
+}
+
+.suggestion-box::-webkit-scrollbar-thumb:active {
+  background-color: rgba(255, 255, 255, 0.5); /* Even brighter on active state */
+  transform: scale(1); /* Reset scaling when clicked */
+}
+
+.suggestion-box.visible {
+  display: block;
+}
+
+.suggestion-item {
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  color: #f1f1f1;
+}
+
+.suggestion-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.suggestion-item:active,
+.suggestion-item:focus {
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.result {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  margin-top: 3rem;
+}
+
+.result img {
+  width: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+  background-color: #333;
+  margin-bottom: 1rem;
+}
+
+.summary {
+  flex: 1;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  body {
+    padding: 2rem 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .container {
+    padding: 2rem;
+    max-width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  input[type="text"] {
+    font-size: 1.1rem;
+    padding: 1rem;
+  }
+
+  .result {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .result img {
+    width: 100px;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  input[type="text"] {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .container {
+    padding: 1.5rem;
+  }
+
+  .result img {
+    width: 80px;
+  }
+}
+
+/* Accessibility: reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* --- Neon Hover Glow Effect --- */
+input[type="text"]:hover {
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+}
+
+/* --- Input Placeholder Styling --- */
+input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+  letter-spacing: 0.5px;
+}
+
+/* --- Subtle Container Pulse --- */
+.container {
+  animation: pulse 10s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+  50% { box-shadow: 0 10px 40px rgba(255, 255, 255, 0.05); }
+}
+
+/* --- Gradient Border on Hover --- */
+.container:hover {
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.15),
+    0 12px 36px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Card Flip Base (for future cards) --- */
+.flip-card {
+  perspective: 1000px;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* --- Particles Background Layer --- */
+body::before {
+  background: radial-gradient(circle at 50% 50%, #1b1f3b, #0d0c1d, #0f2027);
+  mask-image: radial-gradient(circle, white 50%, transparent 90%);
+}
+
+/* --- Floating Particles Animation Layer --- */
+body::after {
+  background-image: radial-gradient(white 1px, transparent 1px);
+  background-size: 3px 3px;
+  opacity: 0.05;
+  z-index: -1;
+  animation: sparkle 30s linear infinite, drift 60s ease-in-out infinite;
+}
+
+@keyframes drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-10px, 10px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* --- Button Styling (if needed) --- */
+button {
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* --- Holographic Flicker (for any accent text) --- */
+.flicker {
+  animation: flicker 3s infinite alternate;
+}
+
+@keyframes flicker {
+  0% { opacity: 1; text-shadow: 0 0 6px rgba(255,255,255,0.2); }
+  50% { opacity: 0.8; text-shadow: 0 0 12px rgba(255,255,255,0.4); }
+  100% { opacity: 1; text-shadow: 0 0 18px rgba(255,255,255,0.6); }
+}
+
+/* --- Text Shimmer Effect --- */
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
